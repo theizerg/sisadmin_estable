@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Listeners;
+
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+
+class LogSuccessfulLogout
+{
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param  object  $event
+     * @return void
+     */
+    public function handle($event)
+    {
+        $login = $event->user->logins()->where('session_token', session('_token'))->first();
+        
+        if ($login)
+        {
+            $login->logout_at = \Carbon\Carbon::now(); 
+            $login->save();
+        }
+        
+    }
+}
